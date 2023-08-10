@@ -1,23 +1,44 @@
 const displayNum = document.querySelector(".number-dis");
 const btns = document.querySelectorAll("button");
-const opera = ["%","*","/","-","+","="];
 let result = "";
 
-const calc = (buttonVal) => {
-  if(buttonVal === "=" && result !== ""){
-    result = eval(result.replace("%", "/100"));
-  }else if(buttonVal === "AC"){
-    result = "";
-  }else if(buttonVal === "DEL"){
-    result = result.toString().slice(0,-1);
-  }else{
-    if(result === "" && opera.includes(buttonVal))return;
-    result += buttonVal;
+const handleButtonClick = (buttonVal) => {
+  if (buttonVal === "=") {
+    calculateResult();
+  } else if (buttonVal === "AC") {
+    clearAll();
+  } else if (buttonVal === "DEL") {
+    deleteLastChar();
+  } else {
+    addToResult(buttonVal);
   }
 
-  displayNum.value=result;
-}
+  updateDisplay();
+};
+
+const calculateResult = () => {
+  if (result !== "") {
+    result = eval(result.replace("%", "/100"));
+  }
+};
+
+const clearAll = () => {
+  result = "";
+};
+
+const deleteLastChar = () => {
+  result = result.slice(0, -1);
+};
+
+const addToResult = (buttonVal) => {
+  if (result === "" && isNaN(buttonVal)) return;
+  result += buttonVal;
+};
+
+const updateDisplay = () => {
+  displayNum.value = result;
+};
 
 btns.forEach((button) => {
-    button.addEventListener("click", (e) => calc(e.target.dataset.value));
-  });
+  button.addEventListener("click", (e) => handleButtonClick(e.target.dataset.value));
+});
